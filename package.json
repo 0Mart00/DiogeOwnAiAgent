@@ -1,0 +1,13 @@
+{
+  "name": "telegram-claude-devops-agent",
+  "version": "1.0.0",
+  "description": "Auto-documenting AI DevOps Agent via Telegram",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "setup": "npm install && cd free-claude-code && pip install -r requirements.txt"
+  },
+  "dependencies": {
+    "telegraf": "^4.16.3"
+  }
+}

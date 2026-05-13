@@ -1,0 +1,11 @@
+# Ne olvassa be a bot saját kódjait
+index.js
+agent.js
+config.js
+modes/
+node_modules/
+
+# Csak a C fájlok érdeklik, a képeket és zenéket hagyja békén
+*.png
+*.mp3
+*.zip

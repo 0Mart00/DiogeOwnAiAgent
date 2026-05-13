@@ -1,0 +1,32 @@
+# 🔒 Titkos kulcsok és környezeti változók
+.env
+*.env
+secrets.json
+
+# 📦 Node.js függőségek (több ezer felesleges fájl)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# 🐍 Python gyorsítótárak és virtuális környezetek
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.venv/
+venv/
+ENV/
+
+# 💾 A Bot saját biztonsági mentései (Ne kerüljenek be a Gitbe)
+backups/
+
+# 📁 Opcionális: Ha nem akarod a fejlesztett projektet is verziókövetni a Bottal együtt
+# project/
+
+# 🖥️ Operációs rendszer specifikus felesleges fájlok
+.DS_Store
+Thumbs.db
+.replit
+replit.nix
