@@ -8,6 +8,7 @@
     "setup": "npm install && cd free-claude-code && pip install -r requirements.txt"
   },
   "dependencies": {
+    "axios": "^1.16.1",
     "telegraf": "^4.16.3"
   }
 }

@@ -1,17 +1,10 @@
 // agent.js
 const { spawn } = require('child_process');
-const config = require('./config');
 const fs = require('fs');
 const path = require('path');
+const config = require('./config');
 
-claudeProcess = spawn('python3', ['free-claude-code/main.py', finalPrompt], {
-    cwd: '/app/a_te_projekted_mappaja', // ⬅️ EZ KORLÁTOZZA A MAPPÁT! Az AI csak ezt a könyvtárat látja.
-    env: {
-        ...process.env,
-        OPENROUTER_API_KEY: config.openrouterKey,
-        FCC_MODEL: modelId
-    }
-});
+let claudeProcess = null;
 let pendingResolve = null;
 
 // Szigorúan elkülönített munkakönyvtár a fejlesztett projektnek
@@ -25,10 +18,11 @@ if (!fs.existsSync(PROJECT_DIR)) {
 function runTaskWithModeAndModel(userPrompt, modeModule, modelId, onOutput, onApprovalRequired, onClose) {
     if (claudeProcess) return false;
 
+    // Itt, a függvényen belül győződünk meg róla, hogy a prompt összeáll és létezik
     const finalPrompt = modeModule.getSystemPrompt(userPrompt);
 
     claudeProcess = spawn('python3', [path.join(__dirname, 'free-claude-code/main.py'), finalPrompt], {
-        cwd: PROJECT_DIR, // ⬅️ KORLÁTOZÁS: Az AI fizikailag csak a project/ mappát látja és szerkesztheti!
+        cwd: PROJECT_DIR, // Korlátozás a project/ mappára
         env: {
             ...process.env,
             OPENROUTER_API_KEY: config.openrouterKey,
@@ -57,7 +51,6 @@ function runTaskWithModeAndModel(userPrompt, modeModule, modelId, onOutput, onAp
     return true;
 }
 
-// 📦 AUTOMATA MENTÉS (BACKUP) FUNKCIÓ
 function createBackup() {
     const backupDir = path.join(__dirname, 'backups');
     if (!fs.existsSync(backupDir)) fs.mkdirSync(backupDir);
@@ -77,7 +70,6 @@ function createBackup() {
     }
 }
 
-// 🔄 VISSZAÁLLÍTÁS (ROLLBACK) FUNKCIÓ
 function rollbackToLatest() {
     const backupDir = path.join(__dirname, 'backups');
     if (!fs.existsSync(backupDir)) return false;
@@ -85,14 +77,11 @@ function rollbackToLatest() {
     const backups = fs.readdirSync(backupDir).filter(f => f.startsWith('backup-')).sort();
     if (backups.length === 0) return false;
 
-    const latestBackup = path.join(backupDir, backups[backups.length - 1]); // A legutolsó mentés
+    const latestBackup = path.join(backupDir, backups[backups.length - 1]);
 
     try {
-        // Töröljük a jelenlegi elrontott projekt mappát
         fs.rmSync(PROJECT_DIR, { recursive: true, force: true });
-        // Visszamásoljuk a mentést
         fs.cpSync(latestBackup, PROJECT_DIR, { recursive: true });
-        // Töröljük ezt a felhasznált mentési mappát, hogy legközelebb az azelőttire lehessen visszaállni
         fs.rmSync(latestBackup, { recursive: true, force: true });
         return true;
     } catch (err) {
@@ -114,3 +103,4 @@ module.exports = {
     denyAction: () => { if (pendingResolve && claudeProcess) { claudeProcess.stdin.write('n\n'); pendingResolve(); pendingResolve = null; } },
     isBusy: () => claudeProcess !== null
 };
+

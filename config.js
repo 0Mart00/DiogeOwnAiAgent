@@ -1,12 +1,13 @@
 // config.js
-if (!process.env.TELEGRAM_TOKEN || !process.env.OPENROUTER_KEY) {
-    console.error("❌ HIBA: Hiányzó Secrets a Replit-en!");
+if (!process.env.TELEGRAM_TOKEN || !process.env.OPENROUTER_KEY || !process.env.ADMIN_TELEGRAM_ID) {
+    console.error("❌ HIBA: Hiányzó Docker környezeti változók (TELEGRAM_TOKEN, OPENROUTER_KEY vagy ADMIN_TELEGRAM_ID)!");
     process.exit(1);
 }
 
 module.exports = {
     telegramToken: process.env.TELEGRAM_TOKEN,
     openrouterKey: process.env.OPENROUTER_KEY,
+    adminId: Number(process.env.ADMIN_TELEGRAM_ID), // Beemeljük az admin ID-t is ide
     models: {
         llama: {
             id: "meta-llama/llama-3.3-70b-instruct:free",
